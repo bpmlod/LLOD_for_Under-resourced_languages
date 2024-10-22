@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Guidelines for LLOD and under resourced lanaguages</title>
+    <meta charset='utf-8'>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c'
+            async class='remove'></script>
+    <link rel="stylesheet" href="stylesheets/codemirror.css"> 
+    <script src="javascripts/codemirror-compressed.js"></script>
+    <script src="http://codemirror.net/mode/sparql/sparql.js"></script>
+    <script src="http://codemirror.net/addon/runmode/runmode.js"></script>
+    <script src="http://codemirror.net/addon/runmode/colorize.js"></script>
+
+    <script src="javascripts/sparql.js"></script>
+    <script src="javascripts/runmode.js"></script>
+    <script src="javascripts/colorize.js"></script>
+	  
+    <script class='remove'>
+      var respecConfig = {
+
+          specStatus: "CG-DRAFT",
+          doRDFa: "1.1",
+          shortName:  "under-bpmlod",
+		  publishDate:  "2024-10-22",
+          editors: [
+				{   name:       "Ranka Stanković",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" },
+				{   name:       "Giedre Valunaite Oleskevicienė",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" }
+          ],
+		  authors: [
+				{   name:       "Ranka Stanković",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" },
+				{   name:       "Giedre Valunaite Oleskevicienė",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" },
+				{   name:       "Purificação Silvano",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" },
+				{   name:       "Mititelu Verginica",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" },
+				{   name:       "Enriketa Sogutlu",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" },
+				{   name:       "Ineke Schuurman",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" },
+				{   name:       "Hugo Gonçalo Oliveira",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" },
+				{   name:       "Jorge Gracia",
+                    url:        "http://jogracia.url.ph/web/",
+                    company:    "University of Zaragoza",
+                    companyURL: "https://www.unizar.es/" },
+				{   name:       "Elwin Huaman",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" },
+				{   name:       "Dagmar Gromann",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" },
+				{   name:       "David Lindemann",
+                    url:        "TBC",
+                    company:    "TBC",
+                    companyURL: "TBC" }					
+          ],
+		  group: "bpmlod",
+		  previousMaturity: "",
+	      previousPublishDate:  "",
+          wg:           "Best Practices for Multilingual Linked Open Data",
+          wgURI:        "http://www.w3.org/community/bpmlod/",
+          wgPublicList: "http://lists.w3.org/Archives/Public/public-bpmlod/",
+//          wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/424242/status",
+      };
+    </script>
+	<link rel="stylesheet" href="stylesheets/codemirror.css">
+    <script src="javascripts/codemirror.js"></script>
+  </head>
+  <body>
+    <section id='abstract'>
+      <p> 
+  This document is aimed at giving advice on representing linguistic linked (open) data (LL(O)D) for under-resourced natural languages (except sign languages). Linguistic linked data can either be migrated from legacy non-linked data sources or built from scratch using linked data mechanisms. The document focuses on the challenges of the under-resourced languages and the possibilities to fill the gap. To that end, the document covers: 1) definition of the term under-resourced languages; 2) the role of (Linguistic) Linked Data with benefits and challenges of Linked Data for linguistics and NLP; 3)  current efforts focused on suggestions for under-resourced languages LL(O)D, including cross-lingual link discovery, creating resources with cross-lingual links, lexicon induction, multilingual enrichment, cross-lingual querying, NER, terminology extraction, and cross-lingual embeddings and translation Inference; 4) case studies based on best practices providing real data examples. The document concludes with recommended efforts and ations for future andvacement in LLOD for Under-resourced languages.
+	      
+     </p>   
+ 
+    </section>
+
+    <section id='sotd'>
+  <!--    <p>This document was published by the <a href="http://www.w3.org/community/bpmlod/">Best Practices for Multilingual Linked Open Data</a> community group.
+       It is not a W3C Standard nor is it on the W3C Standards Track.</p>
+  -->    <p>There are a number of ways that one may participate in the development of this report:</p>
+      <ul>
+      <li>Mailing list: <a href="http://lists.w3.org/Archives/Public/public-bpmlod/">public-bpmlod@w3.org</a>
+      <li>Wiki: <a href="https://www.w3.org/community/bpmlod/wiki/Main_Page">Main page</a>
+      <li>More information about meetings of the BPMLOD group can be obtained 
+        <a href="https://www.w3.org/community/bpmlod/wiki/Meetings_of_the_community_group">here</a></li>
+
+	  <li><a href="https://github.com/bpmlod/Bilingual_Dictionaries_Report">Source code</a> 
+	     for this document can be found on Github.</li>
+      </ul>
+    </section>
+
+
+ <section>
+    <h2>Scope of guidelines</h2>
+	
+	 <section>
+		 <h3>Problem to address </h3>
+   <p> In the digital single market, the role of technology in overcoming the current language barriers to make web content available for users independently of their language is beyond doubt. Language technology development, in turn, hinges greatly on the existence of language resources (LR), including lexica, corpora, labeled datasets, databases, etc. However, there are dramatic differences in the availability of such resources across languages and their official variants), with only a few of them, such as English, featuring prominently in the landscape of discoverable and reusable data, while others, such as Greek, Serbian or etc., with scarce technological support. For example, for the two main variants of Dutch, the one spoken in the Netherlands and the one spoken in Belgium (Flanders), lots of LRs are available, but that is not the case for the variant spoken in Suriname, although this variant is  used in for example education, administration, etc. Similar situations may exist for other languages.
+</p>
+
+ </section>
+   
+   <section>
+		 <h3>List of Acronyms </h3>
+			 <ul>
+<li>ANN index - Approximative Nearest Neighbour index </li>
+<li>API - Application Programming Interface </li>
+<li>BLI - Bilingual Lexicon Induction </li>
+<li>BPMLOD - Best Practices for Multilingual Linked Open data </li>
+<li>FAIR principles - Findability, Accessibility, Interoperability, and Reusability of digital assets </li>
+<li>GUI - Graphical User Interface </li>
+<li>HTTP - Hypertext Transfer Protocol </li>
+<li>IGT - Interlinear Glossed Text </li>
+<li>LD - Linked Data </li>
+<li>LL(O)D - Linguistic Linked (Open) Data </li>
+<li>L(O)D - Linked (Open) Data </li>
+<li>LR - Language resources </li>
+<li>NED - Named Entity Definition </li>
+<li>NEL - Named Entity Linking </li>
+<li>NER - Named Entity Recognition </li>
+<li>NIF - NLP Interchange Format </li>
+<li>NLP - Natural Language Processing </li>
+<li>NMT - Neural Machine Translation </li>
+<li>OLiA - Ontologies of Linguistic Annotation </li>
+<li>OLWG - Open Linguistics Working Group </li>
+<li>OWL - Web Ontology Language </li>
+<li>RDF - Resource Description Framework </li>
+<li>SKOS - Simple Knowledge Organization System </li>
+<li>SPARQL - SPARQL Protocol And RDF Query Language </li>
+<li>TIAD - Translation Inference Across Dictionaries </li>
+<li>URI -  Unique Resource Identifier </li>
+<li>W3C - World Wide Web Consortium </li>
+		</ul>
+   
+   </section>
+<!--   
+   <section>	 
+      <h3>Conventions in this document</h3>	   
+	<p> Throughout this document, we will use <a href="https://www.w3.org/TR/turtle/"> Turtle RDF </a> syntax to provide RDF examples. The following table shows a list of relevant namespaces that will be used in the rest of this document.
+      </p>
+-->
+  
+<table class="nss" id="table1">
+<caption> Namespaces of the relevant vocabularies </caption>
+<tbody>
+<tr><td><b>owl</b></td><td>&lt;http://www.w3.org/2002/07/owl#&gt;</td></tr>
+<tr><td><b>rdfs</b></td><td>&lt;http://www.w3.org/2000/01/rdf-schema#&gt;</td></tr>
+<tr><td><b>ontolex</b></td><td>&lt;http://www.w3.org/ns/lemon/ontolex#&gt;</td></tr>
+<tr><td><b>vartrans</b></td><td>&lt;http://www.w3.org/ns/lemon/vartrans#&gt;</td></tr>
+<tr><td><b>lexinfo</b></td><td>&lt;http://www.lexinfo.net/ontology/2.0/lexinfo#&gt;</td></tr>
+<tr><td><b>skos</b></td><td>&lt;http://www.w3.org/2004/02/skos#&gt;</td></tr>
+
+
+
+</tbody>
+</table>
+
+  </section> 
+ 
+ </section>
+	
+  <section>
+
+     <h2>Some relevant concepts</h2>
+	 <section>
+      
+		<h3> Under-resourced languages (definition and  classification) </h3>
+		
+		<p>In the context of linked data, under-resourced languages refer to languages for which there is a lack of sufficient linguistic resources and structured data available for effective representation and integration into the linked data environment. Moran and Chiarcos (2020) [<cite><a href="#bib-mc2020">MC2020</a></cite>]  distinguish four degrees of under-resourcedness defined by representative linguistic resources they are lacking: </p>
+		<ol>
+		  <li>Lack of language data – a general lack of language description (no substantial grammars, dictionaries, or corpora).</li>
+		  <li>Lack of accessible language data – resources exist but not in a form that can be easily processed, (not available in digital form, access requires proprietary software or specific hardware). </li>
+		  <li>Lack of language technological support – there is accessible language data (texts from internet or social media), but no or insufficient NLP tools, linguistic annotations, lexical resources.</li>
+		  <li>Limited interoperability of available data and tools.</li>
+		</ol>
+		 
+	 
+	 </section> 
+	  
+	 <section>
+      
+		<h3> Linguistic Linked Data</h3>
+		
+		<p>Linked data (LD) refers to a series of best practices and principles for “exposing, sharing, and connecting data on the Web’’, by identifying “things” on the Web with Unique Resource Identifiers (URIs) and using other standards to define useful information about them and links to other “things”, thus enabling interoperability across datasets and systems. Such “things” or resources can also be linguistic information (for instance: words, translations, etc.), leading to the cloud of Linguistic Linked Data (LLD).</p>
+
+		<h4> Benefits Of Linked Data for Linguistics and Natural Language Processing (NLP) </h4>
+		
+			The advantages of exposing and sharing under-resourced language data as LLD are the following: 
+			<ul>
+				<li>Sustaining the technological development of these languages</li>
+				<li>Preserving cultural diversity and indigenous knowledge systems</li>
+				<li>Increased discoverability of LR through centralized repositories</li>
+				<li>Language comparison and information integration through conceptual interoperability</li> 
+				<li>Resources can be easily linked to other resources from other languages</li>
+				<li>Increased portability of LRs and NLP tools across closely related languages</li>
+				<li>Published data follows the FAIR principles (Findability, Accessibility, Interoperability, and Reusability of digital assets)</li>
+				<li>Explainability and interpretable reasoning that is possible even in the absence of large amounts of data</li>	
+			</ul>
+				 
+			<p>The publishing of LD for Linguistics allows resources to be globally and uniquely identified such that they can be retrieved through standard web protocols (Moran and Chiarcos 2020). Establishing uniform connections between resources ensures structural interoperability. Chiarcos et al. (2013) outline the five primary advantages of Linked Data for linguistics and NLP as follows:</p>
+			
+			<p><b>Conceptual interoperability</b> is facilitated by Semantic Web technologies through the creation, maintenance, and sharing of centralized terminology repositories, supporting comparisons and information integration across resources by providing externally defined concepts for annotations.</p>
+
+			<p><b>Linking through URIs</b> allows for establishing resolvable references to globally unique identifiers, fostering a network of interconnected resources among independent research groups.</p>
+
+			<p><b>Information integration</b> at query runtime (Federation) seamlessly combines data from physically separated repositories via HTTP-accessible resources and resolvable URIs, enabling navigation in a Web of Data and facilitating the integration of diverse information resources in the cloud. </p>
+
+			<p><b>Dynamic import</b> necessitates ensuring access to the latest resource version by linking linguistic resources through resolvable URIs, advocating for a robust versioning system in Linguistic Linked Open Data (LLOD) to maintain link consistency and ensure backward compatibility when modifying concepts or examples. </p>
+
+			<p>In an <b>RDF ecosystem</b>, a dynamic interdisciplinary community supports RDF as a data exchange framework, offering APIs, databases, technical assistance, and validators for RDF-based languages, aiding developers of linguistic resources with pre-built solutions for common challenges, like flexible, graph-based database development for multi-layer corpora, as demonstrated by Ide and Suderman (2007). </p>
+
+			<p>The Linked Data paradigm fosters collaborative and interdisciplinary development of web resources, allowing researchers to collaborate using shared technologies, resulting in large, interconnected sets of resources, particularly beneficial for less-resourced languages. Initiatives like OWLG (Open Linguistics Working Group) and LLOD cloud enable access to resources from various languages via central metadata repositories, facilitating the traversal of linked resources and documentation using shared vocabularies. </p>
+
+			<p>The availability of linguistic resources not only aids in discovery but also facilitates resource development for under-resourced languages. For example, NLP tools, annotations, and lexicons can be transferred between related languages, such as from Icelandic to Faroese, and from Hebrew to Ugaritic, addressing NLP support gaps. Linked Data, offering structurally and conceptually interoperable language resources, holds promise as a foundation for future resource porting across diverse languages and domains. </p>
+
+			<h4> Challenges for Under-resourced Languages </h4>
+			Under-resourced languages in the realm of linked data face several challenges:
+			<ol>
+				<li>lack of comprehensive linguistic resources such as ontologies, lexicons, and annotated corpora, that are crucial for representing the semantics of the language in a structured way within LD; </li>
+				<li>sparse or no representation in LD sets, making it difficult to link and integrate information related to these languages. </li>
+				<li>lack of multilingual LD or inadequate representation in multilingual LD sets limits their interoperability with other languages. </li>
+			</ol>
+			<p>Efforts to address these challenges include creating linguistic resources, developing linked data representations, and promoting diverse linguistic and cultural perspectives in the linked data ecosystem for under-resourced languages (Declerck et al. 2022). Bridging this gap is vital for fostering linguistic diversity and ensuring the representation and interconnection of a wide range of languages in the digital space.</p>
+			<p>The Digital Language Equality project advocates for technological support and the situational context for languages to thrive in the digital age. Rehm and Way (2023) suggest a path for Europe towards comprehensive data infrastructures, emphasizing interoperability through harmonized standards across all phases of the data lifecycle.</p>
+
+				 
+	 </section> 
+	 	 
+	 <section>
+      
+		<h3> Language presence in the LOD Cloud and Annohub </h3>
+		
+		<p>Domain and language representation in the LOD Cloud (https://linguistic-lod.org/llod-cloud) and in the Annotation Hub (Annohub, https://annohub.linguistik.de) was analysed by di Buono et al. (2022). The analysis relied on available metadata and manual assignment when needed. The authors confirm English as the most represented language, but surprisingly, in the linguistic domain, Swedish has more resources. This is attributed to Sprakbanked being the primary source in the Annohub repository. Swedish and English are the only languages with over 100 linguistic datasets, while four others have over 50 (Spanish, German, French, and Italian), and 16 more have over 30. Notably, 382 languages have at least 10 linguistics datasets, acknowledging that this includes multilingual datasets explicitly mentioning language names in their metadata.</p>
+		<p>A remarkable effort has been made in collecting rich datasets aimed at depicting linguistic diversity (e.g., ANU Database, AUTOTYP, STEDT, PHOIBLE) (Moran and Chiarcos, 2020) among others, such as Apertium and the Open Multilingual Wordnet (Bond and Paik 2012; Bond et al. 2016). However, even though such initiatives and datasets cover many under-resourced languages, the resulting data remain in project-specific formats, leading to insufficient data access, possibilities for sharing, and integration for query and comparison (Bizer et al. 2011). In order to address this scenario, there is a compelling need to focus on the interoperability of resources and tools with under-resourced languages in the spotlight.</p>
+		 
+	 </section> 
+	 
+
+
+
+	
+	  
+ </section> 
+
+ <section>
+	<h2>Best practices for under-resourced languages</h2>
+	 
+	<p>For languages that lack manually produced language resources but that come with considerable amounts of digitally available text, a simple type of lexical resource can be mentioned: frequency and collocation (“association”) dictionaries that can be automatically derived corpora (Zock and Bilac 2004). The discovery, creation and deployment of appropriate cross-lingual links is of key importance in processing language resources. Rosner et al. (2022) discuss three general methods for linking: the induction of new lexical resources, the enrichment of existing knowledge graphs and ontologies with labels in the under-resourced language and the dynamic multilingual querying of knowledge bases using lexical databases and SPARQL federation. In addition to that, we include a few topics that can be inspiring for building LLD for under-resourced languages. </p>  
+	 
+	<section>
+      
+		<h3> Resource Creation and Enrichment </h3>
+		<p>Cross-lingual link discovery involves creating new resources from existing ones and enriching existing resources to enhance diversity and multilingualism. Sanchez-Rada and Iglesias (2016) propose a LD approach to represent emotion by lexical resources and emotion analysis services. The Onyx ontology models emotion analysis with a semantic vocabulary of emotions integrated with Lemon, NIF and the Provenance Ontology. The alignment of lexical entries with external resources such as WordNet (Miller, 1995) and DBpedia increases interoperability across resources in different languages by bridging LD with semantic and emotion analysis. </p>  
+		<p>The creation of links from existing language resources involves two steps: 1) discovery of which data items in different RDF datasets to link with a given relation R, 2) linking them by creating a new RDF triple using e.g. owl:sameAs. Link discovery involves finding pairs of resources from two sets where a certain relationship holds. The method for determining if a pair meets the relationship can vary depending on the type of resources and the nature of the relationship. Cimiano et al. (2020a) classify link discovery techniques into four categories: terminological (based on comparing text), structural (using dataset organization), extensional (expanding classes based on shared elements), and semantic (using RDF and OWL semantics).</p>  
+		<p>Caracciolo et al. (2012) describe the creation and maintenance of the AGROVOC multilingual thesaurus (coordinated by Food and Agriculture Organisation (FAO)) in LD, aligned with other multilingual knowledge organisation systems related to agriculture, using the SKOS properties exact match and close match. Automatic alignment was based on string similarity matching algorithms, validated by a domain expert for skos:exactMatch relations.</p>  
+		<p>Interlinear glossed text (IGT) provides syntactic and semantic annotations that allow the reader to follow the relationship between a source text and its translation. Chiarcos et al. (2017) propose a representation of IGT data in RDF, along with converters from two popular IGT frameworks and an automatic linking procedure with dictionaries, such as DBnary (Gilles Serasset, 2015).  Chiarcos  and Sérasset (2022) proposed "A cheap and dirty cross-lingual linking service in the cloud".</p>  
+		<p>BabelNet (Navigli et al. 2021), a multilingual semantic network that integrates WordNet and Wikipedia, has been converted into a LD representation, using lemon (Ehrmann et al., 2014), but its use for interlinking multilingual lexical resources is partially open for academic use with restrictions otherwise. </p>  
+		<p>Cross-lingual links align material across languages, serving as building blocks for multilingual resources, adding value to linked resources and enhancing performance in NLP tasks like word sense disambiguation, semantic role labeling, and semantic relations extraction (Chiarcos et al., 2013). Lesnikova (2013) suggests aligning RDF graphs using a language-based approach, comparing natural language terms within the graphs to create aligned triples with the owl:sameAs property based on the most similar representations identified through machine translation and vector representation.</p>  
+		<p>Cimiano et al. (2020b) provide a comprehensive overview of link discovery and representation, including cross-lingual considerations.</p>  
+
+		
+		 
+	</section> 
+
+
+	<section>
+      
+		<h3> Cross-Lingual Embeddings and Translation Inference </h3>
+		
+		<p>Cross-lingual embeddings streamline the transfer of models across languages, even when resources vary, by utilizing a unified vector space. Bilingual lexicons facilitate simultaneous training of source and target languages, necessitating annotated data in just one language. Gracia et al. (2020) showcase a practical implementation of language resources within the Linked Open Data (LLOD) framework, illustrating how LLOD translations, notably from Apertium RDF, can be harnessed for cross-lingual sentiment knowledge transfer without the need for model retraining. </p>
+		<p>Donandt and Chiarcos (2019) use OntoLex sense annotations in Apertium for translation inference, predicting target language word embeddings. Lanau-Coronas and Gracia (2020) leverage graph exploration and cross-lingual word embeddings to derive translations from Apertium RDF without explicit connections. Chakravarthi et al. (2019) simultaneously train multiple languages in an NMT model, transliterating for under-resourced languages. Kasner and Dusek (2020) fine-tune mBART for RDF-to-text generation in English and Russian. These methods demonstrate LLOD resource utility in under-resourced NLP tasks like translation inference, text generation, and sentiment analysis.</p>
+
+	 </section> 
+
+	<section>
+      
+		<h3> Lexicon Induction </h3>
+		
+		<p>LD-based Bilingual Lexicon Induction (BLI), or translation inference, uncovers new translation connections between initially unlinked language pairs, benefiting under-resourced languages. It enables the creation of multilingual resources, fostering direct and indirect links between languages. For instance, the Apertium RDF graph integrates lexicons and translations of minority languages, which can be expanded through BLI methods to include more languages.</p>
+		<p>Linking resources in a graph establishes a foundational infrastructure for exploring relations between data elements in under-resourced and well-resourced languages. BLI generates new translation pairs using monolingual, bilingual, or multilingual dictionaries. Triangulation, for instance, utilizes existing bilingual lexicons or shared word-sense representations to create bilingual lexicons between languages.</p>
+		<p>A bilingual dictionary efficiently links terms in one language to their equivalents in another language, a process requiring explicit representation of cross-lingual connections. Various discovery methods, such as machine learning (Donandt et al., 2017) or graph-based algorithms, identify semantically equivalent terms in target languages. The TIAD (Translation Inference Across Dictionaries) shared task, initiated in 2017, evaluates approaches for automatically generating bilingual and multilingual dictionaries.</p>
+		<p>LD plays a pivotal role in BLI by offering standard representation mechanisms for lexicons and translations, as well as access to bilingual dictionary graphs on the web. LD graphs, exemplified by the Apertium RDF graph, provide a natural application scenario for graph-based BLI techniques.</p>
+		<p>Dictionary resources like K Dictionaries can be converted into a linked format using the Ontolex-Lemon Vartrans module  (Bosque-Gil et al., 2017), which searches for existing monolingual links between source term and target term within a shared sense inventory. This search involves identifying pairs of source and target words sharing a common sense. Implementations like Apertium RDF utilize monolingual sense queries and intersection operations to link with the sense inventory. Just to mention that OntoLex-Lemon  – the Lexicon Model for Ontologies (McCrae et al., 2017) provides an RDF vocabulary for lexical resources on the web, where bilingual dictionaries for many under-resourced languages are being provided in OntoLex (Chiarcos et al., 2020). </p>
+		 
+	 </section> 
+
+	<section>
+      
+		<h3> Lexical Alignment </h3>
+		
+		<p>Converting a lexical resource to an LOD format aligns it with other resources in the LLOD cloud, enhancing both the original and linked resources. lemonUBY (Eckle-Kohler et al., 2015), for instance, links with the OLiA reference model and universal linguistic terminologies like GOLD and ISOcat. Automatic discovery of links between lemonUBY and other resources can occur based on shared lemma and POS information.</p>
+		<p>Another illustration of creating resources through lexical alignment is LIDIOMS (Moussallem et al., 2018), a multilingual LD resource featuring multiword expressions in five languages (English, German, Italian, Portuguese, Russian). Utilizing string similarities, LIDIOMS was linked to other LD resources such as DBnary (Serasset, 2015) and Babel-Net (Navigli et al., 2021). This linkage was established using LIMES algorithms (Ngonga Ngomo, 2012) for DBnary, employing trigram similarity through the rdfs:label property, and manual comparison between properties from LIDIOMS and BabelNet.</p>
+
+		 
+	 </section> 
+
+
+<section>
+      
+		<h3> Multilingual enrichment </h3>
+		
+		<p>Lexicalizing a foreign language knowledge graph for under-resourced languages involves enhancing an existing resource by adding new labels in the under-resourced language. These additional target language labels facilitate querying and processing the knowledge graph using data from the under-resourced language. Arauz et al. (2011) use multilingual labels as a method for conceptual matching EcoLexicon, a multilingual terminological knowledge base on the environment, with DBpedia (Lehmann et al., 2012), GeoNames, and GEMET, the GEneral Multilingual Environmental Thesaurus. </p>
+		<p>The discovered links are represented using owl:sameAs. Their method takes all the English variants of a term expanded with equivalences in other languages and explores coincidences with the multilingual labels of the target term. There is a problem, though, if polysemy occurs at a crosslinguistic level. In that case, they add category membership information to the linking algorithm (e.g., to indicate domains such as “geography” or “oceanography”). </p>
+		<p>This approach is applicable to any language provided there is a machine-readable bilingual word list. This allows for the creation of localized knowledge bases with minimal effort. If these word lists or bilingual dictionaries are available in machine-readable formats using web standards like RDF and SPARQL operators, the process becomes significantly easier. Additionally, the concept of federation in SPARQL allows distributed resources to be dynamically processed for cross-lingual querying.</p>
+</section> 
+
+
+	<section>
+      
+		<h3> Cross-lingual querying </h3>
+		
+		<p>The cross-lingual querying services can easily be crafted using any existing SPARQL endpoint offering federated queries. We present a use case where users want to query the DBpedia ontology for instances of category ”so”@bm (building) (example of under-resourced language Bambara, not incorporated in wikipedia language edition). </p>
+		<p>The service starts with obtaining candidate translations from the query language to the ontology language; then the ontology is queried using the candidates from DBnary (Serasset, 2015) for translations. The Bambara query term is not translated to/from English, hence, the query will make use of a pivot entry to translate from Bambara to English. </p>
+		<p>The following query example performs both steps thanks to SPARQL federated queries. It could be adapted to use any other lexicon available in the LLOD cloud, accessible through a SPARQL endpoint. The benefits of the approach for the under-resourced language are: there are no specific hardware or software requirements, since the service relies on online resources, and its quality will be increased with the resources expansion. </p>
+
+		<pre><code>	
+SELECT DISTINCT * WHERE {
+  ?entry ^dbnary:isTranslationOf  /dbnary:writtenForm "so"@bm.
+  ?t dbnary:isTranslationOf ?entry; 
+	 dbnary:targetLanguage lexvo:eng; 
+	 dbnary:writtenForm ?translation.
+  SERVICE <https://dbpedia.org/sparql> {
+	SELECT DISTINCT * WHERE {
+	  ?a rdfs:label ?translation. 
+	  ?b a ?a     }
+  }  } LIMIT 100
+		</code></pre>	
+
+		<p>The use of LD for the lexicon-corpus interface, aiming at interlinking lexicon entries with their occurrences in corpora for the cross-lingual analysis of idiosyncratic constructions supported by publishing aligned and annotated corpus data as LD employing community standards such as the NLP Interchange Format (Hellmann et al., 2013) is presented in UNIDIVE workshop. Another aspect is enhancing Interoperability for Under-Resourced Languages with a case study on linking Lithuanian-English data in the cybersecurity domain that is converting bilingual textual datasets on cybersecurity (a terminology resource and corpora) into a linkable format and linking them to each other, as well as integrating them into the LLOD Cloud (Rackevičienė et al., 2023). </p> 
+		 
+	 </section> 
+	 
+	 <section>
+      
+		<h3> Named Entity Recognition </h3>
+		
+		<p>Named entity recognition (NER) is the task of identifying and classifying key objects (entities) in text (persons, locations, and organisations). The named entity linking (NEL) is the task of establishing links between the text (with recognised entity) with a knowledge graph or an ontology entry. Entity linking enables applications based on the connection between language, objects in the world, and the available knowledge about those objects. NEL enables semantic search (based on meaning rather than words) and disambiguates occurrences where the same entity have different names in the same language. </p> 
+		<p>Various approaches tackle the task of linking entities in multiple languages: by encoding the orthographic similarity of mentions; by generating URIs for LOD triples from textual data for automatic Knowledge Base construction; by inter-linking between existing datasets, i.e., DBpedia, New York Times, and TalkOf-Europe, and using other controlled vocabularies.</p> 
+		<p>Möller et al. (2021) investigate four aspects of English Entity Linking on Wikidata: 1) evaluation of existing datasets in terms of usage and construction; 2) examination of Wikidata characteristics in designing Entity Linking datasets; 3) analysis of how current approaches utilize Wikidata's features; 4) identification of untapped Wikidata characteristics by existing methods. The findings suggest that current datasets share annotation schemes with other knowledge graphs, limiting potential multilingual and time-dependent datasets. Moreover, approaches often overlook Wikidata's unique features, missing opportunities to enhance quality. Recommendations for improvement include incorporating hyper-relational graph embeddings, considering type information, and utilizing valuable textual information from Wikipedia alongside Wikidata.</p> 
+		<p>Labusch and Neudecker (2020) proposed a named entity disambiguation and linking (NED, NEL) system that consists of three components: 1) lookup of possible candidates in an approximate nearest neighbour (ANN) index that stores BERT-embeddings; 2) evaluation of each candidate by comparison of text passages of Wikipedia performed by a purpose-trained BERT model; 3) final ranking of candidates on the basis of information gathered from previous steps. The NEL approach is competitive in terms of precision but has low recall performance due to insufficient knowledge base coverage of the test data. </p> 
+
+		 
+	 </section> 
+	 
+	 <section>
+      
+		<h3> Terminology Extraction </h3>
+		
+		<p>Terminology extraction denotes the identification of single- or multi-word terms in texts and ideally relations between groups of synonymous and equivalent terms. Rokas et al. (2020) achieve comparable results to high-resource term extraction with a small dataset manually annotated terms in the cybersecurity domain for Lithuanian  by utilizing a Bi-LSTM model. </p> 
+		<p>To benefit from multilingual pre-trained language models for link discovery, the relational knowledge inherent in these models needs to be explicated. Oliveira (2021) extracts lexico-semantic relations from a pretrained BERT model for Portuguese by predicting entities in lexico-syntactic patterns, e.g. “um [MASK] e uma parte de X ´ 1” (part-of) where the X 1 is given and [MASK] has to be predicted, giving best results for hypernymy relation. Interlinking resulting relation instances to existing resources facilitates cross-lingual linking. </p> 
+		<p>The combination of term and relation extraction from monolingual text in a pipeline approach is proposed by Wachowiak et al. (2021) by fine-tuning two separate instances of XLM-R (Conneau et al., 2020). The predicted relations (generic, partitive, spatial, origination relations), are trained on English and German, and evaluated on other languages including Romanian and Portuguese. </p> 
+		<p>The first digital Football dictionary SrFudLE  (Lazarevic et al., 2023) in the Serbian language demonstrates the application of OntoLex and associated modules. The OntoLex-FrAC module (Chiarcos et al., 2022) for a football-specific dictionary includes information about frequency, attestation, and corpus usage from a domain-specific corpus SrFudKo, containing news articles about football in Serbian. Single and multi-word terms are labeled with categories and linked with inflections. Next step is linking with English and Spanish translation equivalent relying on available online resources.</p> 
+
+		 
+	 </section> 
+
+
+
+ </section> 
+ 
+ <section>
+	<h2>Case studies</h2>
+	 
+	<section>
+      
+		<h3> Wikibase </h3>
+		
+		<p>The free <b>Wikibase</b> software enables instant publishing in accordance with the Semantic Web and FAIR principles, and the collaborative curation of datasets. Wikibase (https://wikiba.se) as an extension of MediaWiki is the software underlying Wikidata (https://www.wikidata.org) (Vrandečić and Krötzsch, 2014), a very large knowledge graph maintained by the community of Wikidata users, and technically supported by Wikimedia Deutschland (WMDE, https://www.wikimedia.de). Wikibase can be used for creating data archives that can easily interact with the semantic web through the use of open standards; compared with other software solutions, it offers unique features, such as the option to manually edit every single semantic triple in a graphical interface, user and user rights management, reversible edit histories, a graphical SPARQL query interface and a programmatically queriable endpoint, and an API, among those of any usual MediaWiki instance. Wikibase Cloud (https://www.wikibase.cloud/) is a free Wikibase hosting service provided by WMDE.</p> 
+		<p>Lindemann et al. (2023) and Huaman et al. (2022) model datasets in Ontolex-Lemon (McCrae et al., 2017) on Wikibase. We will mention a few use cases dealing with Quechua, Latin, Kurdish, Basque and Serbian lexical and corpus data. These experiments aim at developing best practices for similar projects in the future. The deployed models and workflows are entirely based on free software; this makes conversion and publishing of lexicographical data as LOD accessible to linguistic minorities on the Web. Furthermore, Wikibase instances can be straightforwardly federated with Wikidata, that is, Wikibase content, including lexeme descriptions, can be either transferred to Wikidata, or combined with Wikidata content in federated SPARQL queries, as long as Wikibase entities are provided with the identifier of the equivalent Wikidata entity. Linking lexemes to Wikidata, or transferring lexeme descriptions to Wikidata integrates own lexical data into the multilingual lexemes collection on Wikidata (cf. Nielsen 2020), which on the level of dictionary senses is itself linked to ontological concepts on the same platform.</p> 
+		<p>The approach presented through the use cases described below is, in fact, a chance for under-represented communities to promote their language on their own Wikibase. Starting to curate digitized lexicographical datasets, which often contain inconsistent or noisy data, using an own Wikibase instance as an editing platform before going to Wikidata has several advantages. One advantage is to avoid creating uncertain or noisy material on Wikidata, and expecting an undefined community to curate it. After a community specialized in their own language’s data is trained on their own Wikibase, members would most probably go on enriching their language’s description on Wikidata, when the data is transferred to that global platform.</p> 
+
+		 
+	</section> 
+	
+	<section>
+      
+		<h3> Qichwabase  </h3>
+		
+		<p>Qichwabase (https://qichwa.wikibase.cloud/wiki/Qichwabase) now contains descriptions of 22,866 lexemes; these stem from the Runasimi Dictionary (https://runasimi.de/runaengl.htm), a multilingual lexical resource accessible online as a downloadable CSV file, collecting lemmas in the orthographic standard of the language (Hanan Runasimi), and providing correspondences in six European and twenty-five different languages of the Quechua family. </p> 
+		<p>The contents of the source CSV file were modeled as instances of the core classes of the OntoLex Lemon model, the standard deployed on Wikibase for the representation of lexical data. One goal is to design working packages that are going to be released for the interested community to refine the data quality. Specific guidelines will enable the annotators to make informed decisions about, for example, aligning multilingual translation equivalents to word senses in entries describing polysemous words, since exact interlanguage correspondences between multiple word senses are not made explicit in the CSV source file. Annotators will use the Qichwabase graphical interface for their edits.</p> 
+
+		 
+	</section> 
+	
+	<section>
+      
+		<h3> Kurdish Wikibase  </h3>
+		
+		<p>Lindemann et al. (2023) transformed four resources freely available under an open source license for Kurdish varieties (https://github.com/sinaahmadi/KurdishLexicography) using a Wikibase instance accessible at https://kurdi.wikibase.cloud. </p> 
+		<p>In the cited paper, the authors point out some differences in the modeling of lexical data, according to the Ontolex-Lemon model, on one hand, and according to Ontolex as it is implemented by default in a Wikibase instance.</p> 
+		<p>Kurdi Wikibase now contains large datasets describing three Kurdish varieties, with sense translations in English and/or Farsi, and is ready for a dedicated community to contribute. </p> 
+
+		 
+	</section> 
+	
+	<section>
+      
+		<h3> Basque language data on Wikibase  </h3>
+		
+		<p>Ahotsak Wikibase (https://datuak.ahotsak.eus/) Wikibase instance is used for experiments linking Basque dialectal lemmata and forms, and their attestations in video transcriptions from ahotsak.eus, to Basque lexemes on Wikidata. To this end, Basque lexemes descriptions from Wikidata have been combined with standard Basque lexeme forms as attested in ETC corpus. The resulting datasets remains ready for the definition of alignments between dialectal and standard forms, so that dialectal forms may inherit their morphological features descriptions from the latter.</p>
+		<p>Another instance, https://monumenta.wikibase.cloud/, includes entities that describe corpus tokens from a subset of the Basque Historical Corpus. These are annotated with links to their containing paragraph in the source document, e.g. a manuscript transcription on the Wikisource platform. In addition, Wikidata entities are deployed for semantic annotation. The historical text token is linked to standard dictionary entries on the same Wikibase instance (on lexeme, sense, and/or form level), which stem from the General Basque Dictionary. Finally, the data model proposed for this Wikibase instance also includes philological annotations, i.e. notes added by scholars to previous editions of the historical text.</p>
+
+		 
+	</section> 
+	
+	<section>
+      
+		<h3> Latin data on Wikidata  </h3>
+		
+		<p>In the cited paper, Lindemann et al. (2023) describe a contribution to Wikidata, which consists of (a) the creation of a property that links Wikidata lexemes to the LiLa Knowledge Base (see https://lila-erc.org), and (b) the upload of 51,492 alignments between Wikidata and LiLa. For these lexemes, a federated query over the LiLa SPARQL endpoint (https://lila-erc.eu/sparql)  already gives access to the wealth of information provided in the LiLa resources. Starting from a lexeme in Wikidata, for instance, it would be possible to retrieve all the occurrences of the words lemmatized under the connected lemma in the collection of LiLa corpora.</p>
+		<p>This contribution is an example of how own LOD datasets, in a Wikibase intance or other kind of LOD  infrastructure, can be aligned to the Wikidata lexemes collection, which means a win-win situation, both for the Wikidata community, and for the provider of the external dataset, since the alignment ensures the findability and re-usability of the latter through the main Wikidata platform, i.e. through the graphical Wikidata interface as well as programmatically.</p>
+
+		 
+	</section> 
+	
+	<section>
+      
+		<h3> Serbian Wikibase  </h3>
+		
+		<p>The Wikibase instance for Serbian (https://serbian.wikibase.cloud/wiki/Main_Page#NIF_Corpus) is inspired by Qichwabase and other Wikibase instances; at the same time, this experiments shifts the use case of Wikibase from lexical to corpus data, aiming at representing both as part of the same dataset, including links from corpus tokens to dictionary entries, that is, on the Serbian Wikibase graph, to nodes representing lexemes, lexeme senses and lexeme forms. Nodes representing corpus tokens are annotated, e.g. with links to nodes representing named entities, which could be aligned to Wikidata enitites. The proposed model is being populated with data from the Serbian literature corpus SrpELTeC () in NIF format (Stanković et al., 2023), explained in detail in the following, and with the Serbian SrpMD morphological lexicon in Ontolex-Lemon (Stanković et al. 2018).</p>
+		<p>In line with latest trends in the field of Linguistic Linked Open Data, a SrpELTeC token is modelled as a node in a LOD graph. Annotations to the token follow the NIF Ontology (Hellmann et al. 2013); this includes most prominently part of speech tag strings (associated to OLiA lexical categories), and lemma strings. The token string, the OLiA category, and the lemma string annotation are used for defining candidate dictionary entries for an alignment. A named entity layer available as part of SprELTeC includes seven classes (PERS, ORG, LOC, ROLE, EVENT, DEMO, WORK) that are mapped to OLiA, Wikidata and DBpedia.</p>
+		<p>The dictionary to link to, the SrpMD Serbian dictionary, is available in a format following the Ontolex-Lemon model (McCrae et al. 2017), which can be almost seamlessly transferred to a Wikibase (Lindemann et al. 2023). </p>
+		<p>The goal of this experiment, a novelty on Wikibase, is to obtain feedback on the proposed model, following requirements summarized as follows: to link corpus tokens (1) to a lexeme node, which is annotated with the standard lemma, and (2) to a lexical form associated to that lexeme, which can be annotated with the grammatical features describing the form. Additionally, the model caters for linking of corpus tokens to (3) a lexical sense associated to the lexeme, which can be annotated with a sense gloss, and (4), to an ontology concept the dictionary sense refers to. </p>
+		<p>The ELTEC corpus includes data of 10 languages, available now as ELTeC-NIF (introduced in the next section), so that the presented approach can be extended to other languages as well.  </p>
+
+		 
+	</section> 
+	
+	<section>
+      
+		<h3> ELTec-NIF  </h3>
+		
+		<p>Stanković et al. (2023) generated Linked Data text corpora for 10 languages (German, English, French, Hungarian, Polish, Portuguese, Romanian, Slovenian, Spanish, and Serbian) from ELTeC (European Literary Text Collection) using the NLP Interchange Format (NIF).  The annotated version of the 1000 novels (100 per language), in the so-called TEI level-2 format, was transformed into NIF, an RDF/OWL-based format that aims to achieve interoperability between NLP tools, language resources, and annotations.  NIF provides support for part-of-speech tagging, lemmatization and entity annotation, enabling these three ELTeC level-2 layers transformation. Python code, including Jupyter notebook, is prepared for export from XML/TEI into NIF, available in colab subfolder in github repository. For Wikidata management mkwikidata library was used and for working with RDF rdflib. The implemented transformation pipeline  is described, while the code and results ELTeC-NIF are freely available for similar use cases. Serbian dataset is available on SPARQL endpoint. </p>
+		<p>Metadata for selected novels are linked with already available in Wikidata, named WikiELTeC, as described in "From ELTeC Text Collection Metadata and Named Entities to Linked-data (and Back)" by  Ikonić-Nešić et al. (2022). </p>
+		<p>The following SPARQL query retrieves six most frequent nouns in a novels of writer Jakov Ignjatović (wd:Q570913):  </p>
+
+		<pre><code>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX nif: <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#>
+SELECT ?lemma (COUNT(?lemma) AS ?count)
+WHERE {
+   ?subject nif:lemma ?lemma ;
+              nif:posTag "NOUN";
+             nif:referenceContext ?novelid.
+    ?novelid dc:creator wd:Q570913. # Jakov Ignjatovic
+}
+GROUP BY ?lemma
+ORDER BY desc(?count)
+		</code></pre>	
+		
+		<p>A list of recognised named entities linked with entity types in Wikidata can be retrieved with the following query :</p>
+
+		<pre><code>
+PREFIX itsrdf: <http://www.w3.org/2005/11/its/rdf#>
+PREFIX nif: <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#>
+SELECT ?subject ?nentity ?etype
+WHERE {
+   ?subject nif:anchorOf ?nentity ;
+            itsrdf:taClassRef ?etype.
+   FILTER (isURI(?etype) && contains(str(?etype), ("wiki") ) ) }
+
+		<p>The total numbers of recognised named entities grouped by type from Wikidata (person (Q5), organization (Q43229) etc. are retrieved with  following query:</p>
+		</code></pre>	
+
+		<pre><code>
+PREFIX itsrdf: <http://www.w3.org/2005/11/its/rdf#>
+PREFIX nif: <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#>
+SELECT ?etype (COUNT(?etype) AS ?count)
+WHERE {
+   ?subject nif:anchorOf ?nentity ;
+           itsrdf:taClassRef ?etype.
+   FILTER (isURI(?etype) && contains(str(?etype), ("wiki") ) )
+} group by ?etype
+		</code></pre>	
+		 
+	</section> 
+	
+</section> 
+ 
+ <section>
+	<h2>Recommended Efforts and Actions</h2>
+ 
+	<p>Based on presented examples in best practices and case studies sections we are presenting recommended efforts and actions for developing LL(O)D for under-resourced natural languages:</p>
+	<ol>
+		<li>Data Collection and Migration:
+			<ul>
+				<li> Effort: Collect existing linguistic resources for under-resourced languages, including dictionaries, corpora, and annotated datasets.</li>
+				<li>Action: Migrate legacy non-linked data sources to Linked Data format using appropriate standards and vocabularies, e.g. Ontolex-lemon for dictionaries, NIF for corpus-data. See  Best Practices for Publishing Linked Data (w3.org)</li>
+			</ul>
+		</li>
+		<li>Cross-Lingual Link Discovery::
+			<ul>
+				<li> Effort: Identify and create cross-lingual links between resources in different languages.</li>
+				<li>Action: Utilize techniques such as terminological, structural, extensional, and semantic link discovery to establish connections between linguistic resources. See Best practises - previous notes - Best Practices for Multilingual Linked Open Data Community Group (w3.org)… </li>
+			</ul>
+		</li>
+		<li>Lexicon Induction and Enrichment:
+			<ul>
+				<li> Effort: Develop lexicons and enrich existing resources with multilingual labels.</li>
+				<li>Action: Employ methods like bilingual lexicon induction, lexical alignment, and multilingual enrichment to enhance linguistic resources. See …Guidelines for Lexicography and linked data (bpmlod.github.io)</li>
+			</ul>
+		</li>		
+		<li>Cross-Lingual Embeddings and Translation Inference:
+			<ul>
+				<li> Effort: Facilitate model transfer and translation inference across languages.</li>
+				<li>Action: Utilize cross-lingual embeddings and bilingual lexicons to streamline translation tasks and improve NLP performance. See …    Guidelines for Linguistic Linked Data Generation: Bilingual Dictionaries (v2.0) (bpmlod.github.io)    Guidelines for Linguistic Linked Data Generation: Multilingual Dictionaries (BabelNet) (w3.org) </li>
+			</ul>
+		</li>		
+		<li>Named Entity Recognition and Linking (NER):
+			<ul>
+				<li> Effort: Enhance entity recognition and linking for under-resourced languages.</li>
+				<li>Action: Develop NEL models and techniques tailored to under-resourced languages, incorporating orthographic similarity and leveraging existing datasets and controlled vocabularies, establish linking with WIkidata, DBnary or alike. Use spaCy or similar libraries that have NEL integration, then export to RDF (for example NIF see https://llod.jerteh.rs/ELTEC/ )</li>
+			</ul>
+		</li>		
+		<li>Cross-Lingual Querying:
+			<ul>
+				<li> Effort: Enable cross-lingual querying of linguistic resources.</li>
+				<li>Action: Develop services utilizing SPARQL endpoints for federated queries, allowing dynamic processing of distributed resources for cross-lingual analysis. </li>
+			</ul>
+		</li>
+		<li>Standardization and Interoperability:
+			<ul>
+				<li> Effort: Ensure standardization and interoperability of linguistic resources.</li>
+				<li>Action: Adhere to Linked Data principles and vocabularies such as SKOS, Olia, Lexifo, NIF, and OntoLex-Lemon to enhance interoperability and integration across diverse language datasets.</li>
+			</ul>
+		</li>
+		<li>Community Collaboration:
+			<ul>
+				<li> Effort: Foster collaboration and knowledge sharing among researchers and developers.</li>
+				<li>Action: Participate in initiatives like OWLG and LLOD cloud, contribute to shared repositories, and engage in interdisciplinary development of web resources for under-resourced languages.</li>
+			</ul>
+		</li>
+		<li>Documentation and Best Practices:
+			<ul>
+				<li> Effort: Document best practices and case studies for representing LL(O)D.</li>
+				<li>Action: Publish guidelines, case studies, and tutorials to disseminate knowledge and promote effective strategies for representing linguistic linked data for under-resourced languages.</li>
+			</ul>
+		</li>
+		<li>Advocacy and Policy:
+			<ul>
+				<li> Effort: Advocate for policy support and funding for linguistic diversity and technology development.</li>
+				<li>Action: Engage with policymakers and funding agencies to prioritize initiatives supporting under-resourced languages in the digital space, emphasizing the importance of language equality and cultural preservation. By implementing these efforts and actions, stakeholders can contribute to the representation and integration of under-resourced languages into the Linked Data ecosystem, fostering linguistic diversity and enabling broader access to language resources and technologies.</li>
+			</ul>
+		</li>		
+		
+	</ol>	
+
+	<p>By implementing these efforts and actions, stakeholders can contribute to the representation and integration of under-resourced languages into the Linked Data ecosystem, fostering linguistic diversity and enabling broader access to language resources and technologies.</p>
+
+	
+ </section> 
+ 
+ 
+
+      
+	 
+
+
+ <section>
+   <h2>Acknowledgements</h2>
+   The editors would like to thank the BPMLOD community group members for their valuable feedback. 
+   </section>
+
+ <section>    
+   <h2>References</h2> 
+ <p>...UNDER CONSTRUCTION...</p>
+    
+<dt id="bib-mc2020">[MC2020]</dt>
+
+
+<dd> Moran, Steven, and Christian Chiarcos, <a href="https://library.oapen.org/bitstream/handle/20.500.12657/23502/1/1006651.pdf#page=62"> <cite>Linguistic Linked Open Data and Under-Resourced Languages: From Collection to Application.</cite></a>. Development of Linguistic Linked Open Data Resources for Collaborative Data-Intensive Research in the Language Sciences (2020): 39
+
+	
+<dt id="bib-ontolex">[ONTOLEX]</dt>
+<dd> Lexicon Model for Ontologies.  URL: <a href="https://www.w3.org/2016/05/ontolex/">https://www.w3.org/2016/05/ontolex/</a> 
+	
+<dt id="bib-wdata">[WDATA]</dt>
+<dd>D. Vrandečić and M. Krötzsch. 2014. <a href=" https://doi.org/10.1145/2629489">Wikidata: a free collaborative knowledgebase</a>. Communication of ACM vol. 57, issue 10, pp. 78-85. October 2014.
+
+   </section>
+
+</body>
+<script>
+ setTimeout(function(){CodeMirror.colorize();}, 20);
+</script>
+
+</html>
